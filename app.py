@@ -2,8 +2,8 @@ from flask import Flask, request, jsonify
 # Import library to get environment variable
 import os 
 # Import library for Telegram bot
-import telegram 
-
+import telegram
+from telegram import Bot, Update
 # Create an instance of Flask
 app = Flask(__name__)
 TOKEN = os.environ.get('TOKEN')
@@ -32,6 +32,22 @@ def api():
     bot.send_message(chat_id=chat_id, text='Hello, this is a message from the bot')
     
     return jsonify(data)
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # get data from request
+    data = request.get_json(force=True)
+
+    # update
+    update: Update = Update.de_json(data, bot)
+
+    # get chat_id, text from update
+    chat_id = update.message.chat.id
+    text = update.message.text
+
+    # sendMessage
+    bot.send_message(chat_id, text)
+
+    return 'ok'
 
 
     
