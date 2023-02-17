@@ -1,6 +1,6 @@
-from flask import Flask ,request,jsonify
+from flask import Flask ,request
 import requests
-import telegram
+
 from telegram import Bot, Update
 from telegram.ext import Dispatcher,CommandHandler,MessageHandler,Filters
 import os
@@ -9,36 +9,13 @@ from bot_app import(
     start,
     echo,
 )
-# Create an instance of Flask
+    
 app = Flask(__name__)
-TOKEN = os.environ.get('TOKEN')
-# Create a bot
-bot = telegram.Bot(token=TOKEN)
+TOKEN = os.environ['TOKEN']
+bot = Bot(TOKEN)
 
-#Create a route for home page
-@app.route('/')
-def home():
-    html = '''
-    <h1> This is a home page </h1>
-    <p> This is a paragraph </p>
-    '''
-    print(TOKEN)
-    return html
+@app.route('/webhook',methods=['POST','GET'])
 
-# Create a route
-# @app.route('/api', methods=['POST'])
-# def api():
-#     # Get the data from the POST request.
-   
-#     data = request.get_json(force=True)
-#     print(data)
-#     chat_id =1959335278
-    
-#     # Send a message to the bot
-#     bot.send_message(chat_id=chat_id, text='Hello, this is a message from the bot')
-    
-#     return jsonify(data)
-@app.route('/webhook', methods=['POST'])
 def webhook():
     if request.method == 'GET':
         return 'Helo World'
@@ -55,7 +32,6 @@ def webhook():
 
         dispatcher.process_update(update)
 
-
         # chat_id = update.message.chat_id
         # text = update.message.text
         # if text !=None:
@@ -64,11 +40,3 @@ def webhook():
         # print(chat_id)
 
     return "Assalomu alaykum"
-
-
-    
-
-
-# Run the app
-if __name__ == '__main__':
-    app.run(debug=True)
